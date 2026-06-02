@@ -1,0 +1,783 @@
+running
+  '/usr/lib/R/bin/R --no-echo --no-restore -e 
+library(tidyverse)
+library(MetaboAnalystR)
+
+run_met_enrich <- function(file_path) {
+  file_name <- basename(file_path)
+  organ_name <- strsplit(file_name, "_")[[1]][1]
+  out_dir <- paste0("/home/kyky2/空代/code for 网站/page_3/", organ_name)
+  dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+  cat("输出文件夹：", out_dir, "\n")
+
+  cluster_de <- read.csv(file_path)
+  all_clusters <- unique(cluster_de$Cluster)
+  cat("检测到", length(all_clusters), "个Cluster：\n")
+  print(all_clusters)
+
+  for (clust in all_clusters) {
+    cat("\n====================================\n")
+    cat("正在处理：", clust, "\n")
+
+    sig_mets <- cluster_de %>%
+      filter(Cluster == clust, p_val < 0.05) %>%
+      pull(HMDB) %>%
+      na.omit() %>%
+      unique()
+
+    if (length(sig_mets) < 1) {
+      cat("无有效代谢物，跳过\n")
+      next
+    }
+    cat("显著代谢物数：", length(sig_mets), "\n")
+
+    mSet <- InitDataObjects("conc", "pathora", FALSE, default.dpi = 72)
+    mSet <- Setup.MapData(mSet, sig_mets)
+    mSet <- CrossReferencing(mSet, "hmdb")
+    mSet <- CreateMappingResultTable(mSet)
+    mSet <- SetMetabolomeFilter(mSet, F)
+    mSet <- SetCurrentMsetLib(mSet, "kegg_pathway", 0)
+    mSet <- CalculateHyperScore(mSet)
+
+    plot_name <- file.path(out_dir, paste0("cluster_", gsub("[^a-zA-Z0-9]", "_", clust), "_plot"))
+    mSet <- PlotORA(mSet, plot_name, "bar", "png", 72, width = NA)
+
+    res_df <- mSet$analSet$ora.mat
+    res_path <- file.path(out_dir, paste0("cluster_", gsub("[^a-zA-Z0-9]", "_", clust), "_enrich_result.csv"))
+    write.csv(res_df, res_path, row.names = TRUE)
+
+    cat("完成：", clust, "\n")
+  }
+  cat("\n全部完成！所有结果在：", out_dir, "\n")
+}
+
+file_list <- c(
+  HEART     = "/home/kyky2/空代/heart/DE_Results_FullSpots/HEART_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv",
+  INTESTINE = "/home/kyky2/空代/intestine/DE_Results_FullSpots/INTESTINE_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv",
+  KIDNEY    = "/home/kyky2/空代/kidney/DE_Results_FullSpots/KIDNEY_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv",
+  LIVER     = "/home/kyky2/空代/liver/DE_Results_FullSpots/LIVER_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv",
+  LUNG      = "/home/kyky2/空代/lung/DE_Results_FullSpots/LUNG_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv",
+  LYMPH     = "/home/kyky2/空代/lymph/DE_Results_FullSpots/LYMPH_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv",
+  SPLEEN    = "/home/kyky2/空代/spleen/DE_Results_FullSpots/SPLEEN_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv",
+  STERNUM   = "/home/kyky2/空代/sternum/DE_Results_FullSpots/STERNUM_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv",
+  THYMUS    = "/home/kyky2/空代/thymus/DE_Results_FullSpots/THYMUS_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv"
+)
+
+for (i in seq_along(file_list)) {
+  organ <- names(file_list)[i]
+  path  <- file_list[i]
+  cat("\n")
+  cat(strrep("=", 60), "\n")
+  cat("【", i, "/", length(file_list), "】开始处理器官：", organ, "\n")
+  cat("文件：", path, "\n")
+  cat(strrep("=", 60), "\n")
+  tryCatch(
+    run_met_enrich(path),
+    error = function(e) {
+      cat("错误：", organ, "处理失败\n")
+      cat("错误信息：", e$message, "\n")
+    }
+  )
+}
+cat("\n\n所有 9 个器官富集分析完成！\n")
+'
+
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+============================================================ 
+【 1 / 9 】开始处理器官： HEART 
+文件： /home/kyky2/空代/heart/DE_Results_FullSpots/HEART_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/HEART 
+检测到 5 个Cluster：
+[1] "心外膜 Epicardium"             "心室肌肉1 Ventricular Muscle1"
+[3] "心室肌肉2 Ventricular Muscle2" "心房肌肉 Atrial Muscle"       
+[5] "血管 Vessel"                  
+
+====================================
+正在处理： 心外膜 Epicardium 
+显著代谢物数： 2726 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 心外膜 Epicardium 
+
+====================================
+正在处理： 心室肌肉1 Ventricular Muscle1 
+显著代谢物数： 2720 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 心室肌肉1 Ventricular Muscle1 
+
+====================================
+正在处理： 心室肌肉2 Ventricular Muscle2 
+显著代谢物数： 2667 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 心室肌肉2 Ventricular Muscle2 
+
+====================================
+正在处理： 心房肌肉 Atrial Muscle 
+显著代谢物数： 2599 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 心房肌肉 Atrial Muscle 
+
+====================================
+正在处理： 血管 Vessel 
+显著代谢物数： 2657 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 血管 Vessel 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/HEART 
+
+============================================================ 
+【 2 / 9 】开始处理器官： INTESTINE 
+文件： /home/kyky2/空代/intestine/DE_Results_FullSpots/INTESTINE_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/INTESTINE 
+检测到 5 个Cluster：
+[1] "粘膜下（Submucosa）"                                         
+[2] "绒毛-隐窝过渡区(交界区)Villus-crypt transition zone/junction"
+[3] "绒毛1 Villus1"                                               
+[4] "绒毛2 Villus2"                                               
+[5] "肌层（Muscular layer）"                                      
+
+====================================
+正在处理： 粘膜下（Submucosa） 
+显著代谢物数： 2669 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 粘膜下（Submucosa） 
+
+====================================
+正在处理： 绒毛-隐窝过渡区(交界区)Villus-crypt transition zone/junction 
+显著代谢物数： 2484 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 绒毛-隐窝过渡区(交界区)Villus-crypt transition zone/junction 
+
+====================================
+正在处理： 绒毛1 Villus1 
+显著代谢物数： 2648 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 绒毛1 Villus1 
+
+====================================
+正在处理： 绒毛2 Villus2 
+显著代谢物数： 2475 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 绒毛2 Villus2 
+
+====================================
+正在处理： 肌层（Muscular layer） 
+显著代谢物数： 2529 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肌层（Muscular layer） 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/INTESTINE 
+
+============================================================ 
+【 3 / 9 】开始处理器官： KIDNEY 
+文件： /home/kyky2/空代/kidney/DE_Results_FullSpots/KIDNEY_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/KIDNEY 
+检测到 9 个Cluster：
+[1] "皮质1 Cortex1"     "皮质2 Cortex2"     "肾盂 Renal Pelvis"
+[4] "肾盏1 Calyx1"      "肾盏2 Calyx2"      "血管 Vascular"    
+[7] "被膜 Capsule"      "髓质1 Medulla1"    "髓质2 Medulla2"   
+
+====================================
+正在处理： 皮质1 Cortex1 
+显著代谢物数： 2799 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 皮质1 Cortex1 
+
+====================================
+正在处理： 皮质2 Cortex2 
+显著代谢物数： 2833 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 皮质2 Cortex2 
+
+====================================
+正在处理： 肾盂 Renal Pelvis 
+显著代谢物数： 2833 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肾盂 Renal Pelvis 
+
+====================================
+正在处理： 肾盏1 Calyx1 
+显著代谢物数： 2841 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肾盏1 Calyx1 
+
+====================================
+正在处理： 肾盏2 Calyx2 
+显著代谢物数： 2824 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肾盏2 Calyx2 
+
+====================================
+正在处理： 血管 Vascular 
+显著代谢物数： 2739 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 血管 Vascular 
+
+====================================
+正在处理： 被膜 Capsule 
+显著代谢物数： 2843 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 被膜 Capsule 
+
+====================================
+正在处理： 髓质1 Medulla1 
+显著代谢物数： 2743 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 髓质1 Medulla1 
+
+====================================
+正在处理： 髓质2 Medulla2 
+显著代谢物数： 2759 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 髓质2 Medulla2 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/KIDNEY 
+
+============================================================ 
+【 4 / 9 】开始处理器官： LIVER 
+文件： /home/kyky2/空代/liver/DE_Results_FullSpots/LIVER_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/LIVER 
+检测到 6 个Cluster：
+[1] "肝实质 Hepatic Parenchyma" "肝静脉 Hepatic Vein"      
+[3] "胆管 Bile Duct"            "胆管间隙 Bile Duct Gap"   
+[5] "血管间隙 Vessel Gap"       "被膜 Capsule"             
+
+====================================
+正在处理： 肝实质 Hepatic Parenchyma 
+显著代谢物数： 2795 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肝实质 Hepatic Parenchyma 
+
+====================================
+正在处理： 肝静脉 Hepatic Vein 
+显著代谢物数： 2687 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肝静脉 Hepatic Vein 
+
+====================================
+正在处理： 胆管 Bile Duct 
+显著代谢物数： 2395 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 胆管 Bile Duct 
+
+====================================
+正在处理： 胆管间隙 Bile Duct Gap 
+显著代谢物数： 2127 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 胆管间隙 Bile Duct Gap 
+
+====================================
+正在处理： 血管间隙 Vessel Gap 
+显著代谢物数： 2634 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 血管间隙 Vessel Gap 
+
+====================================
+正在处理： 被膜 Capsule 
+显著代谢物数： 2802 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 被膜 Capsule 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/LIVER 
+
+============================================================ 
+【 5 / 9 】开始处理器官： LUNG 
+文件： /home/kyky2/空代/lung/DE_Results_FullSpots/LUNG_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/LUNG 
+检测到 3 个Cluster：
+[1] "终末细支气管 Terminal Bronchiole" "肺泡 Alveoli"                    
+[3] "被膜 Capsule"                    
+
+====================================
+正在处理： 终末细支气管 Terminal Bronchiole 
+显著代谢物数： 2435 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 终末细支气管 Terminal Bronchiole 
+
+====================================
+正在处理： 肺泡 Alveoli 
+显著代谢物数： 2462 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肺泡 Alveoli 
+
+====================================
+正在处理： 被膜 Capsule 
+显著代谢物数： 2471 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 被膜 Capsule 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/LUNG 
+
+============================================================ 
+【 6 / 9 】开始处理器官： LYMPH 
+文件： /home/kyky2/空代/lymph/DE_Results_FullSpots/LYMPH_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/LYMPH 
+检测到 5 个Cluster：
+[1] "中区 Middle cortex" "内区 Inner cortex"  "外区 Outer cortex" 
+[4] "被膜 Capsule"       "髓质 Medulla"      
+
+====================================
+正在处理： 中区 Middle cortex 
+显著代谢物数： 2640 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 中区 Middle cortex 
+
+====================================
+正在处理： 内区 Inner cortex 
+显著代谢物数： 2701 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 内区 Inner cortex 
+
+====================================
+正在处理： 外区 Outer cortex 
+显著代谢物数： 2659 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 外区 Outer cortex 
+
+====================================
+正在处理： 被膜 Capsule 
+显著代谢物数： 2736 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 被膜 Capsule 
+
+====================================
+正在处理： 髓质 Medulla 
+显著代谢物数： 2751 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 髓质 Medulla 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/LYMPH 
+
+============================================================ 
+【 7 / 9 】开始处理器官： SPLEEN 
+文件： /home/kyky2/空代/spleen/DE_Results_FullSpots/SPLEEN_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/SPLEEN 
+检测到 4 个Cluster：
+[1] "白髓 White Pulp"      "红髓 Red Pulp"        "被膜 Capsule"        
+[4] "边缘区 Marginal Zone"
+
+====================================
+正在处理： 白髓 White Pulp 
+显著代谢物数： 2781 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 白髓 White Pulp 
+
+====================================
+正在处理： 红髓 Red Pulp 
+显著代谢物数： 2762 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 红髓 Red Pulp 
+
+====================================
+正在处理： 被膜 Capsule 
+显著代谢物数： 2804 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 被膜 Capsule 
+
+====================================
+正在处理： 边缘区 Marginal Zone 
+显著代谢物数： 2745 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 边缘区 Marginal Zone 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/SPLEEN 
+
+============================================================ 
+【 8 / 9 】开始处理器官： STERNUM 
+文件： /home/kyky2/空代/sternum/DE_Results_FullSpots/STERNUM_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/STERNUM 
+检测到 5 个Cluster：
+[1] "肋骨 Rib"           "肌肉 Muscle"        "胸骨 Sternal Bone" 
+[4] "骨髓1 Bone Marrow1" "骨髓2 Bone Marrow2"
+
+====================================
+正在处理： 肋骨 Rib 
+显著代谢物数： 2838 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肋骨 Rib 
+
+====================================
+正在处理： 肌肉 Muscle 
+显著代谢物数： 2827 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 肌肉 Muscle 
+
+====================================
+正在处理： 胸骨 Sternal Bone 
+显著代谢物数： 2847 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 胸骨 Sternal Bone 
+
+====================================
+正在处理： 骨髓1 Bone Marrow1 
+显著代谢物数： 2837 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 骨髓1 Bone Marrow1 
+
+====================================
+正在处理： 骨髓2 Bone Marrow2 
+显著代谢物数： 2826 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 骨髓2 Bone Marrow2 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/STERNUM 
+
+============================================================ 
+【 9 / 9 】开始处理器官： THYMUS 
+文件： /home/kyky2/空代/thymus/DE_Results_FullSpots/THYMUS_Global_FullSpots_Wilcox_DE_Annotated_Fast.csv 
+============================================================ 
+输出文件夹： /home/kyky2/空代/code for 网站/page_3/THYMUS 
+检测到 6 个Cluster：
+[1] "皮质中 Middle Cortex"                
+[2] "皮质内 Inner Cortex"                 
+[3] "皮质外 Outer Cortex"                 
+[4] "结缔组织囊 Connective Tissue Capsule"
+[5] "脂肪细胞 Adipocytes"                 
+[6] "髓质 Medulla"                        
+
+====================================
+正在处理： 皮质中 Middle Cortex 
+显著代谢物数： 2724 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 皮质中 Middle Cortex 
+
+====================================
+正在处理： 皮质内 Inner Cortex 
+显著代谢物数： 2751 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 皮质内 Inner Cortex 
+
+====================================
+正在处理： 皮质外 Outer Cortex 
+显著代谢物数： 2714 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 皮质外 Outer Cortex 
+
+====================================
+正在处理： 结缔组织囊 Connective Tissue Capsule 
+显著代谢物数： 2791 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 结缔组织囊 Connective Tissue Capsule 
+
+====================================
+正在处理： 脂肪细胞 Adipocytes 
+显著代谢物数： 2617 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 脂肪细胞 Adipocytes 
+
+====================================
+正在处理： 髓质 Medulla 
+显著代谢物数： 2736 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： 髓质 Medulla 
+
+全部完成！所有结果在： /home/kyky2/空代/code for 网站/page_3/THYMUS 
+There were 48 warnings (use warnings() to see them)
+
+
+所有 9 个器官富集分析完成！

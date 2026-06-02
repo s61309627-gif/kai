@@ -1,0 +1,148 @@
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+ ============================================================ 
+处理器官： heart 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_heart.csv 
+显著代谢物数： 1657 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： heart 
+
+ ============================================================ 
+处理器官： intestine 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_intestine.csv 
+显著代谢物数： 1703 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： intestine 
+
+ ============================================================ 
+处理器官： kidney 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_kidney.csv 
+显著代谢物数： 1708 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： kidney 
+
+ ============================================================ 
+处理器官： liver 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_liver.csv 
+显著代谢物数： 1591 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： liver 
+
+ ============================================================ 
+处理器官： lung 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_lung.csv 
+显著代谢物数： 1328 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： lung 
+
+ ============================================================ 
+处理器官： lymph 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_lymph.csv 
+显著代谢物数： 1588 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： lymph 
+
+ ============================================================ 
+处理器官： spleen 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_spleen.csv 
+显著代谢物数： 1670 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： spleen 
+
+ ============================================================ 
+处理器官： sternum 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_sternum.csv 
+显著代谢物数： 1530 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： sternum 
+
+ ============================================================ 
+处理器官： thymus 
+文件： /home/kyky2/空代/All_Organs_Comparison/DE_Analysis_Dynamic_Presto/DE_Result_Dynamic_Presto_thymus.csv 
+显著代谢物数： 1587 
+[1] "MetaboAnalyst R objects initialized ..."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "0"                                                                                                                                                                                      
+[2] "Over half of the compound IDs could not be matched to our database. Please make \n                                    sure that correct compound IDs or common compound names are used."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Loaded files from MetaboAnalyst web-server."
+[1] "Mset ORA via xialab.ca/api successful!"
+完成： thymus 
+Warning messages:
+1: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+2: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+3: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+4: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+5: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+6: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+7: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+8: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+9: In write.csv(qvec, file = "datalist.csv", row.names = FALSE, col.names = FALSE,  :
+  attempt to set 'col.names' ignored
+
+所有跨器官富集分析完成！结果在： /home/kyky2/空代/code for 网站/page_3/across_organ 

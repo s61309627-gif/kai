@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spatial Metabolomic Atlas of the Mouse</title>
+    <link rel="stylesheet" href="./styles.css?v=20260530-1918" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="Spatial Metabolomic Atlas home">
+        <span class="brand-mark">SMA</span>
+        <span>
+          <strong>Spatial Metabolomic Atlas</strong>
+          <small>Mouse spatial metabolome portal</small>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="#home">Home</a>
+        <a href="#method">Method</a>
+        <a href="#browse">Browse</a>
+        <a href="#analysis">Analysis</a>
+        <a href="#download">Download</a>
+        <a href="#help">Help</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="page hero-page">
+        <div class="hero-copy">
+          <p class="eyebrow">Spatial metabolomics resource</p>
+          <h1>Spatial Metabolomic Atlas of the Mouse</h1>
+          <p class="lead">
+            A cross-organ atlas for exploring metabolite distribution, spatial
+            specificity, aging-associated remodeling, and sex-dependent
+            metabolic differences across mouse tissues.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#browse">Browse samples</a>
+            <a class="button secondary" href="#analysis">Open analysis</a>
+          </div>
+        </div>
+        <figure class="hero-figure">
+          <img src="./assets/heart-fo-1.png" alt="Spatial metabolomic atlas overview" />
+        </figure>
+      </section>
+
+      <section class="page function-overview" aria-labelledby="home-functions">
+        <div class="section-title">
+          <p class="eyebrow">Functions</p>
+          <h2 id="home-functions">Five entry points for atlas exploration</h2>
+        </div>
+        <div class="home-function-grid">
+          <a href="#browse" class="mini-card"><span>A</span><strong>Sample Browse</strong></a>
+          <a href="#distribution" class="mini-card"><span>B</span><strong>Metabolite Distribution</strong></a>
+          <a href="#spatial-specificity" class="mini-card"><span>C</span><strong>Spatial Specificity</strong></a>
+          <a href="#aging" class="mini-card"><span>D</span><strong>Aging Analysis</strong></a>
+          <a href="#sex" class="mini-card"><span>E</span><strong>Sex Difference</strong></a>
+        </div>
+        <p class="citation">Citation placeholder: Spatial Metabolomic Atlas of the Mouse.</p>
+      </section>
+
+      <section id="method" class="page method-page">
+        <div class="section-title centered">
+          <p class="eyebrow">Method</p>
+          <h2>Workflow and technical overview</h2>
+          <p>
+            This page will host the experimental workflow, mouse cohort design,
+            sample preparation, instrument parameters, and computational
+            analysis details.
+          </p>
+        </div>
+        <div class="workflow-grid">
+          <article>
+            <span class="step-index">01</span>
+            <h3>Cohort Design</h3>
+            <p>Nine organs are profiled across young female, young male, aged female, and aged male groups.</p>
+          </article>
+          <article>
+            <span class="step-index">02</span>
+            <h3>Sample Preparation</h3>
+            <p>Fresh frozen sections are prepared for matched H&amp;E imaging and MALDI-MSI acquisition.</p>
+          </article>
+          <article>
+            <span class="step-index">03</span>
+            <h3>MSI Acquisition</h3>
+            <p>Ion images are collected with standardized instrument settings and quality-control checks.</p>
+          </article>
+          <article>
+            <span class="step-index">04</span>
+            <h3>Bioinformatics</h3>
+            <p>Spatial clustering, metabolite annotation, differential testing, and pathway enrichment are integrated.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="browse" class="page browse-page">
+        <div class="section-title">
+          <p class="eyebrow">Browse</p>
+          <h2>Multi-sample atlas browser</h2>
+          <p>
+            Select an organ to inspect its overview, then choose a cohort to
+            browse three matched samples with H&amp;E images, spatial metabolomic
+            clusters, and metabolite class summaries.
+          </p>
+        </div>
+
+        <div class="organ-strip" id="browseOrganStrip"></div>
+
+        <div class="summary-table-wrap">
+          <table class="summary-table">
+            <thead>
+              <tr><th colspan="5" id="tableOrganName">Heart</th></tr>
+              <tr>
+                <th>Group</th>
+                <th>Samples</th>
+                <th>Spots</th>
+                <th>Ions</th>
+                <th>Metabolites</th>
+              </tr>
+            </thead>
+            <tbody id="cohortTable"></tbody>
+          </table>
+        </div>
+
+        <div class="cohort-row" id="browseCohortRow"></div>
+
+        <div class="sample-grid" id="sampleGrid" aria-live="polite"></div>
+      </section>
+
+      <section id="analysis" class="page analysis-intro">
+        <aside class="analysis-menu" aria-label="Analysis menu">
+          <strong>Analysis menu</strong>
+          <a class="active" href="#analysis">Introduction</a>
+          <a href="#distribution">Metabolite Distribution Search</a>
+          <a href="#spatial-specificity">Spatial Specificity Analysis</a>
+          <a href="#aging">Aging-Related Analysis</a>
+          <a href="#sex">Sex Difference Analysis</a>
+        </aside>
+        <div class="analysis-list">
+          <article class="analysis-card">
+            <div class="logo-tile logo-distribution" aria-hidden="true"><span></span></div>
+            <div>
+              <h2>Metabolite Distribution Search</h2>
+              <p>Search a metabolite or m/z feature and compare its spatial abundance pattern across organs, cohorts, and samples.</p>
+              <a href="#distribution">Open module</a>
+            </div>
+          </article>
+          <article class="analysis-card">
+            <div class="logo-tile logo-specificity" aria-hidden="true"><span></span></div>
+            <div>
+              <h2>Spatial Specificity Analysis</h2>
+              <p>Select an anatomical region to view region-enriched metabolites, word-cloud summaries, and pathway enrichment results.</p>
+              <a href="#spatial-specificity">Open module</a>
+            </div>
+          </article>
+          <article class="analysis-card">
+            <div class="logo-tile logo-aging" aria-hidden="true"><span></span></div>
+            <div>
+              <h2>Aging-Related Analysis</h2>
+              <p>Compare young and aged cohorts within each organ and region to identify age-associated metabolic remodeling.</p>
+              <a href="#aging">Open module</a>
+            </div>
+          </article>
+          <article class="analysis-card">
+            <div class="logo-tile logo-sex" aria-hidden="true"><span></span></div>
+            <div>
+              <h2>Sex Difference Analysis</h2>
+              <p>Explore female-versus-male metabolic signatures and inspect cohort-specific volcano plots and biomarker tables.</p>
+              <a href="#sex">Open module</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="distribution" class="page module-page">
+        <aside class="analysis-menu" aria-label="Analysis menu">
+          <strong>Analysis menu</strong>
+          <a href="#analysis">Introduction</a>
+          <a class="active" href="#distribution">Metabolite Distribution Search</a>
+          <a href="#spatial-specificity">Spatial Specificity Analysis</a>
+          <a href="#aging">Aging-Related Analysis</a>
+          <a href="#sex">Sex Difference Analysis</a>
+        </aside>
+        <div class="module-content">
+          <div class="section-title">
+            <p class="eyebrow">Module 1</p>
+            <h2>Metabolite Distribution Search</h2>
+            <p>Choose an organ and metabolite to preview spatial distribution patterns across the four cohorts.</p>
+          </div>
+          <form class="filter-bar">
+            <label><span>Organ</span><select id="distributionOrgan"></select></label>
+            <label><span>Metabolite</span><input type="search" value="L-Histidine" /></label>
+            <label><span>Spatial feature</span><select><option>All regions</option><option>High abundance</option><option>Region enriched</option></select></label>
+            <button type="button" class="button primary">Search</button>
+          </form>
+          <div class="cohort-preview">
+            <figure><img src="./assets/heart-fo-1.png" alt="Young female spatial distribution placeholder" /><figcaption>Young Female</figcaption></figure>
+            <figure><img src="./assets/heart-fo-2.png" alt="Young male spatial distribution placeholder" /><figcaption>Young Male</figcaption></figure>
+            <figure><img src="./assets/heart-fo-3.png" alt="Aged female spatial distribution placeholder" /><figcaption>Aged Female</figcaption></figure>
+            <figure class="empty-figure"><div>Image pending</div><figcaption>Aged Male</figcaption></figure>
+          </div>
+        </div>
+      </section>
+
+      <section id="spatial-specificity" class="page module-page">
+        <aside class="analysis-menu" aria-label="Analysis menu">
+          <strong>Analysis menu</strong>
+          <a href="#analysis">Introduction</a>
+          <a href="#distribution">Metabolite Distribution Search</a>
+          <a class="active" href="#spatial-specificity">Spatial Specificity Analysis</a>
+          <a href="#aging">Aging-Related Analysis</a>
+          <a href="#sex">Sex Difference Analysis</a>
+        </aside>
+        <div class="module-content">
+          <div class="section-title">
+            <p class="eyebrow">Module 2</p>
+            <h2>Spatial Specificity Analysis</h2>
+            <p>Select an organ and anatomical cluster to inspect the representative spatial map, cluster-specific metabolites, metabolite word cloud, pathway enrichment plot, and pathway enrichment ratio table.</p>
+          </div>
+          <div class="module2-shell">
+            <div class="module2-controls">
+              <div>
+                <h3>Organ</h3>
+                <div class="organ-strip compact" id="specificityOrganStrip"></div>
+              </div>
+              <div>
+                <h3>Cluster</h3>
+                <div class="region-list" id="specificityClusterList"></div>
+              </div>
+            </div>
+
+            <div class="module2-grid">
+              <section class="module2-panel spatial-panel">
+                <div class="panel-heading">
+                  <h3 id="module2SpatialTitle">Selected Spatial Cluster</h3>
+                </div>
+                <img id="module2SpatialImage" src="" alt="Selected organ spatial cluster map" />
+              </section>
+
+              <section class="module2-panel wordcloud-panel">
+                <div class="panel-heading">
+                  <h3>Top 20 Specific Metabolites</h3>
+                </div>
+                <div class="word-cloud" id="module2WordCloud"></div>
+              </section>
+
+              <section class="module2-panel table-panel">
+                <div class="panel-heading">
+                  <h3>Specific Metabolite Table</h3>
+                </div>
+                <div class="data-table-wrap">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Metabolite</th>
+                        <th>Super Class</th>
+                        <th>log2FC</th>
+                        <th>Adjusted P</th>
+                      </tr>
+                    </thead>
+                    <tbody id="module2MetaboliteTable"></tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section class="module2-panel enrichment-panel">
+                <div class="panel-heading">
+                  <h3>Pathway Enrichment</h3>
+                </div>
+                <img id="module2EnrichmentImage" src="" alt="Pathway enrichment plot" />
+              </section>
+
+              <section class="module2-panel table-panel pathway-table-panel">
+                <div class="panel-heading">
+                  <h3>Pathway Table</h3>
+                </div>
+                <div class="data-table-wrap">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Pathway</th>
+                        <th>Enrichment Ratio</th>
+                      </tr>
+                    </thead>
+                    <tbody id="module2PathwayTable"></tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="aging" class="page module-page">
+        <aside class="analysis-menu" aria-label="Analysis menu">
+          <strong>Analysis menu</strong>
+          <a href="#analysis">Introduction</a>
+          <a href="#distribution">Metabolite Distribution Search</a>
+          <a href="#spatial-specificity">Spatial Specificity Analysis</a>
+          <a class="active" href="#aging">Aging-Related Analysis</a>
+          <a href="#sex">Sex Difference Analysis</a>
+        </aside>
+        <div class="module-content">
+          <div class="section-title">
+            <p class="eyebrow">Module 3</p>
+            <h2>Aging-Related Analysis</h2>
+            <p>Filter by organ, sex, and cluster to compare young and aged groups and review ranked differential metabolites.</p>
+          </div>
+          <div class="filter-bar">
+            <label><span>Organ</span><select id="agingOrgan"></select></label>
+            <label><span>Sex</span><select><option>Female</option><option>Male</option></select></label>
+            <label><span>Cluster</span><select><option>Ventricular Muscle1</option><option>Epicardium</option><option>Vessel</option></select></label>
+            <button type="button" class="button primary">Run comparison</button>
+          </div>
+          <div class="volcano-placeholder">
+            <div class="volcano-dot up"></div><div class="volcano-dot mid"></div><div class="volcano-dot down"></div>
+            <strong>Volcano plot placeholder</strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="sex" class="page module-page">
+        <aside class="analysis-menu" aria-label="Analysis menu">
+          <strong>Analysis menu</strong>
+          <a href="#analysis">Introduction</a>
+          <a href="#distribution">Metabolite Distribution Search</a>
+          <a href="#spatial-specificity">Spatial Specificity Analysis</a>
+          <a href="#aging">Aging-Related Analysis</a>
+          <a class="active" href="#sex">Sex Difference Analysis</a>
+        </aside>
+        <div class="module-content">
+          <div class="section-title">
+            <p class="eyebrow">Module 4</p>
+            <h2>Sex Difference Analysis</h2>
+            <p>Filter by organ, age group, and cluster to compare female and male cohorts within matching biological contexts.</p>
+          </div>
+          <div class="filter-bar">
+            <label><span>Organ</span><select id="sexOrgan"></select></label>
+            <label><span>Age group</span><select><option>Young</option><option>Aged</option></select></label>
+            <label><span>Cluster</span><select><option>Ventricular Muscle1</option><option>Epicardium</option><option>Vessel</option></select></label>
+            <button type="button" class="button primary">Run comparison</button>
+          </div>
+          <div class="volcano-placeholder sex-mode">
+            <div class="volcano-dot up"></div><div class="volcano-dot mid"></div><div class="volcano-dot down"></div>
+            <strong>Volcano plot placeholder</strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="download" class="page download-page">
+        <div class="section-title centered">
+          <p class="eyebrow">Download</p>
+          <h2>Data download</h2>
+          <p>Download links are prepared for sample metadata, spatial annotations, differential metabolite tables, and pathway enrichment results.</p>
+        </div>
+        <div class="download-grid">
+          <a href="../datalist.csv">Sample metadata</a>
+          <a href="../core_marker_plots/module_score_by_cluster.csv">Cluster module scores</a>
+          <a href="../metaboanalyst_smpdb_pathway_ora_result.csv">Pathway enrichment results</a>
+          <a href="#">Image package placeholder</a>
+        </div>
+      </section>
+
+      <section id="help" class="page help-page">
+        <div class="section-title centered">
+          <p class="eyebrow">Help</p>
+          <h2>Contact and support</h2>
+          <p>For questions about data submission, image replacement, analysis modules, or citation format, contact the SMA project team.</p>
+        </div>
+        <div class="support-card">
+          <strong>Support mailbox</strong>
+          <a href="mailto:support@example.org">support@example.org</a>
+          <span>Replace this address with the final project contact.</span>
+        </div>
+      </section>
+    </main>
+
+    <script src="./sample-manifest.js?v=20260530-1902"></script>
+    <script src="./assets/generated/module2-manifest.js?v=20260530-1918"></script>
+    <script src="./app.js?v=20260530-1918"></script>
+  </body>
+</html>
